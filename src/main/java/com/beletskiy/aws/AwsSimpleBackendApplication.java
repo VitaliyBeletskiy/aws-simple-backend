@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AwsSImpleBackendApplication {
+public class AwsSimpleBackendApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(AwsSImpleBackendApplication.class, args);
+    SpringApplication.run(AwsSimpleBackendApplication.class, args);
   }
 }
