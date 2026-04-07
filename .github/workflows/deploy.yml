@@ -1,0 +1,49 @@
+name: Build and Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build jar
+        run: ./gradlew clean bootJar
+
+      - name: Prepare SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.EC2_PORT }} ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Upload jar to EC2
+        run: |
+          JAR_FILE=$(find build/libs -maxdepth 1 -name "*.jar" ! -name "*-plain.jar" | head -n 1)
+          scp -P ${{ secrets.EC2_PORT }} \
+            "$JAR_FILE" \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/app.jar
+
+      - name: Restart app on EC2
+        run: |
+          ssh -p ${{ secrets.EC2_PORT }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            sudo mv /tmp/app.jar /opt/aws-simple-backend/app.jar
+            sudo systemctl restart aws-simple-backend
+            sudo systemctl status aws-simple-backend --no-pager
+          EOF
