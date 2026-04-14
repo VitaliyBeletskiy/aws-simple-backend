@@ -61,3 +61,10 @@ jobs:
 
       - name: Push nginx Docker image to ECR
         run: docker push ${{ steps.login-ecr.outputs.registry }}/$NGINX_REPOSITORY:latest
+
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service \
+            --cluster default \
+            --service simple-backend-service-0y9a421b \
+            --force-new-deployment

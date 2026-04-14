@@ -15,6 +15,6 @@ public class HelloController {
   public Map<String, String> home() {
     ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Stockholm"));
     String formatted = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    return Map.of("message", "Backend is running", "timestamp", formatted);
+    return Map.of("message", "Backend is running", "timestamp", formatted, "version", "3");
   }
 }
