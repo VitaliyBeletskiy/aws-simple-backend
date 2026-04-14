@@ -7,7 +7,8 @@ on:
 
 env:
   AWS_REGION: eu-north-1
-  ECR_REPOSITORY: simple-backend
+  BACKEND_REPOSITORY: simple-backend
+  NGINX_REPOSITORY: simple-nginx
 
 jobs:
   build-and-push:
@@ -43,14 +44,20 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker image
-        run: |
-          docker build -t $ECR_REPOSITORY:latest .
+      - name: Build backend Docker image
+        run: docker build -t $BACKEND_REPOSITORY:latest .
 
-      - name: Tag Docker image
-        run: |
-          docker tag $ECR_REPOSITORY:latest ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:latest
+      - name: Tag backend Docker image
+        run: docker tag $BACKEND_REPOSITORY:latest ${{ steps.login-ecr.outputs.registry }}/$BACKEND_REPOSITORY:latest
 
-      - name: Push Docker image to ECR
-        run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:latest
+      - name: Push backend Docker image to ECR
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/$BACKEND_REPOSITORY:latest
+
+      - name: Build nginx Docker image
+        run: docker build -t $NGINX_REPOSITORY:latest ./nginx
+
+      - name: Tag nginx Docker image
+        run: docker tag $NGINX_REPOSITORY:latest ${{ steps.login-ecr.outputs.registry }}/$NGINX_REPOSITORY:latest
+
+      - name: Push nginx Docker image to ECR
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/$NGINX_REPOSITORY:latest
