@@ -1,7 +1,6 @@
 package com.beletskiy.aws.todo.repository;
 
 import com.beletskiy.aws.todo.model.TodoItem;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class InMemoryTodoRepository implements TodoRepository {
 
   private final AtomicLong idSequence = new AtomicLong(0);
