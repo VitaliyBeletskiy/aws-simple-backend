@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: eu-north-1
   BACKEND_REPOSITORY: simple-backend
-  NGINX_REPOSITORY: simple-nginx
+#  NGINX_REPOSITORY: simple-nginx
 
 jobs:
   build-and-push:
@@ -53,14 +53,14 @@ jobs:
       - name: Push backend Docker image to ECR
         run: docker push ${{ steps.login-ecr.outputs.registry }}/$BACKEND_REPOSITORY:latest
 
-      - name: Build nginx Docker image
-        run: docker build -t $NGINX_REPOSITORY:latest ./nginx
+#      - name: Build nginx Docker image
+#        run: docker build -t $NGINX_REPOSITORY:latest ./nginx
 
-      - name: Tag nginx Docker image
-        run: docker tag $NGINX_REPOSITORY:latest ${{ steps.login-ecr.outputs.registry }}/$NGINX_REPOSITORY:latest
+#      - name: Tag nginx Docker image
+#        run: docker tag $NGINX_REPOSITORY:latest ${{ steps.login-ecr.outputs.registry }}/$NGINX_REPOSITORY:latest
 
-      - name: Push nginx Docker image to ECR
-        run: docker push ${{ steps.login-ecr.outputs.registry }}/$NGINX_REPOSITORY:latest
+#      - name: Push nginx Docker image to ECR
+#        run: docker push ${{ steps.login-ecr.outputs.registry }}/$NGINX_REPOSITORY:latest
 
       - name: Force new ECS deployment
         run: |
